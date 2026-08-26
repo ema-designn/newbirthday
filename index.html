@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>A Little Surprise 🩵</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+/* ============================================================
+   0. CONFIG-DRIVEN CSS VARIABLES
+   ============================================================ */
+:root{
+  --bg-deep:        #060a1a;
+  --bg-navy-1:      #0a1330;
+  --bg-navy-2:      #101b45;
+  --bg-navy-3:      #172764;
+  --ink:            #f5f7ff;
+  --ink-soft:       rgba(245,247,255,0.72);
+  --ink-faint:      rgba(245,247,255,0.45);
+  --accent-blue:    #8ec9ff;
+  --accent-blue-2:  #5aa8f0;
+  --accent-pink:    #ffb8d9;
+  --accent-pink-2:  #ff8fc1;
+  --glow-blue:      rgba(142,201,255,0.55);
+  --glow-pink:      rgba(255,184,217,0.5);
+  --glass-bg:       rgba(255,255,255,0.055);
+  --glass-bg-2:     rgba(255,255,255,0.09);
+  --glass-border:   rgba(255,255,255,0.14);
+  --glass-blur:     18px;
+  --serif:          'Playfair Display', Georgia, serif;
+  --sans:           'Poppins', -apple-system, sans-serif;
+  --arabic:         'Cairo', sans-serif;
+  --radius-lg:      28px;
+  --radius-md:      18px;
+  --radius-sm:      12px;
+  --ease:           cubic-bezier(.22,.9,.3,1);
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+html,body{
+  height:100%;
+  overflow:hidden;
+}
+
+body{
+  font-family:var(--sans);
+  color:var(--ink);
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(90,120,220,0.20), transparent 55%),
+    radial-gradient(ellipse at 85% 15%, rgba(255,180,220,0.10), transparent 45%),
+    linear-gradient(160deg, var(--bg-deep) 0%, var(--bg-navy-1) 45%, var(--bg-navy-2) 78%, var(--bg-navy-3) 100%);
+  position:relative;
+  min-height:100vh;
+  min-height:100dvh;
+  width:100%;
+}
+
+/* ============================================================
+   1. AMBIENT PARTICLES CANVAS
+   ============================================================ */
+#particles-canvas{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* ============================================================
+   2. APP SHELL / SCREEN SWITCHING
+   ============================================================ */
+#app{
+  position:relative;
+  z-index:1;
+  height:100vh;
+  height:100dvh;
+  width:100%;
+  overflow:hidden;
+}
+
+.screen{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:32px 22px 40px;
+  text-align:center;
+  opacity:0;
+  visibility:hidden;
+  transform:translateY(18px) scale(0.985);
+  transition:opacity .55s var(--ease), transform .55s var(--ease), visibility 0s linear .55s;
+  overflow-y:auto;
+}
+
+.screen.active{
+  opacity:1;
+  visibility:visible;
+  transform:translateY(0) scale(1);
+  transition:opacity .55s var(--ease), transform .55s var(--ease), visibility 0s linear 0s;
+}
+
+.screen::-webkit-scrollbar{ width:0; }
+
+/* ============================================================
+   3. TYPOGRAPHY
+   ============================================================ */
+.eyebrow{
+  font-family:var(--sans);
+  font-size:11px;
+  letter-spacing:4px;
+  text-transform:uppercase;
+  color:var(--accent-blue);
+  opacity:.85;
+  margin-bottom:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+
+h1.title{
+  font-family:var(--serif);
+  font-weight:700;
+  font-size:clamp(30px, 8vw, 42px);
+  line-height:1.15;
+  letter-spacing:.2px;
+}
+
+h1.title em{ font-style:italic; font-weight:500; color:var(--accent-pink); }
+
+.subheading{
+  font-family:var(--serif);
+  font-style:italic;
+  font-weight:400;
+  font-size:clamp(14px, 4vw, 17px);
+  color:var(--ink-soft);
+  margin-top:14px;
+  max-width:320px;
+  line-height:1.55;
+}
+
+/* ============================================================
+   4. GLASS CARD
+   ============================================================ */
+.glass{
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
+  backdrop-filter:blur(var(--glass-blur));
+  -webkit-backdrop-filter:blur(var(--glass-blur));
+  border-radius:var(--radius-lg);
+  box-shadow:0 8px 40px rgba(0,0,0,0.35);
+}
+
+/* ============================================================
+   5. BUTTONS
+   ============================================================ */
+.btn{
+  font-family:var(--sans);
+  font-weight:600;
+  font-size:14px;
+  letter-spacing:.5px;
+  border:none;
+  cursor:pointer;
+  border-radius:999px;
+  padding:17px 30px;
+  color:var(--bg-deep);
+  background:linear-gradient(135deg, var(--accent-blue), var(--accent-blue-2));
+  box-shadow:0 0 0 rgba(142,201,255,0), 0 10px 30px rgba(90,168,240,0.35);
+  transition:transform .25s var(--ease), box-shadow .25s var(--ease), opacity .25s;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  justify-content:center;
+}
+.btn:active{ transform:scale(.96); }
+
+.btn-locked{
+  background:rgba(255,255,255,0.06);
+  color:var(--ink-faint);
+  border:1px solid var(--glass-border);
+  box-shadow:none;
+  cursor:not-allowed;
+}
+
+.btn-glow{
+  animation:pulseGlow 1.8s ease-in-out infinite;
+}
+@keyframes pulseGlow{
+  0%,100%{ box-shadow:0 0 18px 2px var(--glow-blue), 0 10px 30px rgba(90,168,240,.35); }
+  50%{ box-shadow:0 0 34px 10px var(--glow-blue), 0 10px 30px rgba(90,168,240,.45); }
+}
+
+.btn-ghost{
+  background:transparent;
+  color:var(--ink);
+  border:1px solid rgba(255,255,255,0.35);
+  box-shadow:none;
+}
+
+.btn-pink{
+  background:linear-gradient(135deg, var(--accent-pink), var(--accent-pink-2));
+  color:#3a0f28;
+}
+
+/* ============================================================
+   SCREEN 1 — COUNTDOWN
+   ============================================================ */
+.countdown-grid{
+  display:flex;
+  gap:12px;
+  margin:34px 0 26px;
+}
+.cd-box{
+  width:64px;
+}
+.cd-num{
+  font-family:var(--serif);
+  font-weight:700;
+  font-size:26px;
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
+  border-radius:14px;
+  padding:14px 0;
+  backdrop-filter:blur(10px);
+}
+.cd-label{
+  font-size:9px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  margin-top:8px;
+}
+
+.hint-line{
+  font-size:12px;
+  color:var(--ink-faint);
+  margin-top:20px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+/* ============================================================
+   SCREEN 2 — PIN LOCK
+   ============================================================ */
+.pin-dots{
+  display:flex;
+  gap:16px;
+  margin:30px 0 34px;
+}
+.pin-dot{
+  width:14px; height:14px;
+  border-radius:50%;
+  border:1.5px solid var(--accent-blue);
+  transition:all .25s var(--ease);
+}
+.pin-dot.filled{
+  background:var(--accent-blue);
+  box-shadow:0 0 12px var(--glow-blue);
+  transform:scale(1.15);
+}
+.pin-dots.error .pin-dot{
+  border-color:var(--accent-pink-2);
+  background:var(--accent-pink-2);
+}
+
+.pin-pad{
+  display:grid;
+  grid-template-columns:repeat(3, 70px);
+  gap:16px;
+}
+.pin-key{
+  width:70px; height:70px;
+  border-radius:50%;
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
+  color:var(--ink);
+  font-family:var(--serif);
+  font-size:22px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:transform .15s var(--ease), background .15s;
+}
+.pin-key:active{ transform:scale(.9); background:var(--glass-bg-2); }
+.pin-key.fn{ font-size:16px; opacity:.6; }
+
+.shake{ animation:shakeErr .5s var(--ease); }
+@keyframes shakeErr{
+  0%,100%{ transform:translateX(0); }
+  20%{ transform:translateX(-10px); }
+  40%{ transform:translateX(9px); }
+  60%{ transform:translateX(-6px); }
+  80%{ transform:translateX(4px); }
+}
+
+/* ============================================================
+   SCREEN 3 — CATCH ME
+   ============================================================ */
+.mascot{
+  font-size:76px;
+  margin-bottom:8px;
+  animation:floatY 3.2s ease-in-out infinite;
+}
+@keyframes floatY{
+  0%,100%{ transform:translateY(0); }
+  50%{ transform:translateY(-10px); }
+}
+
+.question-card{
+  padding:26px 24px 30px;
+  margin-top:22px;
+  width:100%;
+  max-width:320px;
+  position:relative;
+}
+.question-text{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:18px;
+  margin-bottom:20px;
+}
+.yn-row{
+  display:flex;
+  gap:14px;
+  justify-content:center;
+  position:relative;
+  height:56px;
+}
+#btn-no{
+  position:relative;
+  transition:transform .18s var(--ease);
+}
+#btn-yes{
+  transition:transform .4s var(--ease), font-size .4s var(--ease);
+  transform-origin:center;
+}
+#btn-yes.btn-yes-fullscreen{
+  position:fixed;
+  inset:0;
+  width:100vw;
+  height:100vh;
+  border-radius:0;
+  font-size:clamp(28px, 9vw, 46px);
+  transform:none;
+  z-index:60;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+#btn-no{
+  transition:transform .3s var(--ease), opacity .3s var(--ease);
+}
+#btn-no.roaming{
+  position:absolute;
+}
+
+.emoji-rain-layer{
+  position:fixed; inset:0;
+  pointer-events:none;
+  z-index:50;
+  overflow:hidden;
+}
+.emoji-fall{
+  position:absolute;
+  top:-40px;
+  font-size:22px;
+  animation:emojiFall linear forwards;
+}
+@keyframes emojiFall{
+  to{ transform:translateY(115vh) rotate(360deg); opacity:0.2; }
+}
+
+.yes-feedback{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:16px;
+  color:var(--accent-pink);
+  margin-top:18px;
+  opacity:0;
+  transition:opacity .5s var(--ease);
+}
+.yes-feedback.show{ opacity:1; }
+
+/* ============================================================
+   SCREEN 4 — LOVE METER
+   ============================================================ */
+.heart-wrap{
+  position:relative;
+  width:150px; height:150px;
+  margin:30px 0 10px;
+}
+.heart-wrap svg{ width:100%; height:100%; overflow:visible; }
+#heart-fill{
+  transition:height .05s linear;
+}
+.love-percent{
+  font-family:var(--serif);
+  font-weight:700;
+  font-size:30px;
+  margin-top:6px;
+}
+.love-caption{
+  font-size:13px;
+  color:var(--ink-faint);
+  font-style:italic;
+  font-family:var(--serif);
+  margin-bottom:24px;
+}
+.hold-btn{
+  user-select:none;
+  min-width:230px;
+  position:relative;
+  overflow:hidden;
+}
+.hold-btn .fillbar{
+  position:absolute;
+  left:0; top:0; bottom:0;
+  width:0%;
+  background:rgba(255,255,255,0.28);
+  transition:width .05s linear;
+}
+.hold-btn span{ position:relative; z-index:1; }
+
+.result-text{
+  font-family:var(--serif);
+  font-size:19px;
+  font-style:italic;
+  margin:20px 0 10px;
+  opacity:0;
+  transform:translateY(8px);
+  transition:all .5s var(--ease);
+}
+.result-text.show{ opacity:1; transform:translateY(0); }
+
+/* ============================================================
+   SCREEN 5 — MENU
+   ============================================================ */
+.menu-grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:14px;
+  margin-top:32px;
+  width:100%;
+  max-width:360px;
+}
+.menu-card{
+  padding:22px 10px 18px;
+  cursor:pointer;
+  transition:transform .2s var(--ease), background .2s;
+}
+.menu-card:active{ transform:scale(.94); }
+.menu-icon{ font-size:30px; margin-bottom:10px; }
+.menu-label{
+  font-family:var(--serif);
+  font-weight:600;
+  font-size:15px;
+}
+.menu-desc{
+  font-size:10.5px;
+  color:var(--ink-faint);
+  margin-top:6px;
+  line-height:1.4;
+}
+
+/* ============================================================
+   SCREEN 6 — CONTENT MODALS
+   ============================================================ */
+.content-screen{ justify-content:flex-start; padding-top:70px; }
+.back-btn{
+  position:absolute;
+  top:20px; left:20px;
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
+  color:var(--ink);
+  font-size:13px;
+  padding:9px 16px;
+  border-radius:999px;
+  cursor:pointer;
+  display:flex; align-items:center; gap:6px;
+  z-index:5;
+}
+
+/* --- تعديل سكشن الفيديو --- */
+.video-frame{
+  width:100%;
+  max-width:320px;
+  border-radius:var(--radius-md);
+  overflow:hidden;
+  border:1px solid var(--glass-border);
+  margin-top:24px;
+  box-shadow:0 12px 40px rgba(0,0,0,0.4);
+  position: relative; /* لضبط الأيقونة الشفافة */
+  cursor: pointer;
+}
+.video-frame video{ width:100%; display:block; aspect-ratio:9/16; object-fit:cover; background:#000; }
+
+.play-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.3);
+  color: rgba(255,255,255,0.9);
+  transition: opacity 0.3s var(--ease);
+  pointer-events: none; /* عشان الضغطة تروح للكونتينر */
+}
+
+/* --- تنسيق الجاليري ليكون صورتين جمب بعض وكبار --- */
+.gallery{
+  margin-top:26px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  width: 100%;
+  max-width: 400px;
+  padding: 0 10px 20px;
+  direction: rtl;
+}
+
+.photo-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  transition: transform 0.2s ease;
+}
+
+.photo-card:active {
+  transform: scale(0.97);
+}
+
+.photo-card img{
+  width:100%;
+  aspect-ratio: 1 / 1; 
+  object-fit:cover;
+  display:block;
+}
+
+.photo-caption {
+  font-family: var(--arabic);
+  font-size: 12px;
+  color: var(--ink-soft);
+  padding: 10px 8px;
+  line-height: 1.5;
+  text-align: center;
+  min-height: 54px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.special-photo-section {
+  width: 100%;
+  max-width: 360px;
+  margin: 15px auto 40px;
+  background: #fdfcf8;
+  padding: 12px 12px 24px;
+  border-radius: 6px;
+  box-shadow: 0 14px 26px rgba(0,0,0,0.45);
+  text-align: center;
+}
+.special-photo-section img {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  border-radius: 4px;
+}
+.special-photo-text {
+  font-family: var(--arabic);
+  font-size: 18px;
+  font-weight: 700;
+  color: #3a2e2e;
+  margin-top: 15px;
+}
+
+/* تنسيق الجواب العربي */
+.letter-card{
+  margin-top:22px;
+  padding:28px 22px;
+  max-width:340px;
+  max-height:60vh;
+  overflow-y:auto;
+  text-align:right;
+  direction: rtl;
+}
+.letter-card p{
+  font-family: var(--arabic);
+  font-size:16px;
+  line-height:1.9;
+  color:var(--ink-soft);
+  white-space:pre-line;
+}
+.letter-sign{
+  margin-top:18px;
+  font-family: var(--arabic);
+  font-weight:700;
+  font-size: 17px;
+  color:var(--accent-pink);
+  text-align:left;
+}
+
+/* ============================================================
+   SCREEN 7 — FINALE
+   ============================================================ */
+.typewriter-box{
+  min-height:100px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  max-width:320px;
+}
+#typewriter-text{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:19px;
+  line-height:1.5;
+}
+.cursor-blink{
+  animation:blink 1s step-start infinite;
+}
+@keyframes blink{ 50%{ opacity:0; } }
+
+/* ============================================================
+   MISC
+   ============================================================ */
+.hidden{ display:none !important; }
+.tap-hint{
+  font-size:11px;
+  color:var(--ink-faint);
+  position:absolute;
+  bottom:26px;
+  left:50%;
+  transform:translateX(-50%);
+  letter-spacing:1px;
+}
+
+@media (min-width:480px){
+  #app{ max-width:480px; margin:0 auto; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="particles-canvas"></canvas>
+
+<audio id="bg-music" loop preload="auto">
+  <source src="muu.mp3" type="audio/mpeg">
+</audio>
+
+<div id="app">
+
+  <!-- ============ SCREEN 1 : COUNTDOWN ============ -->
+  <section class="screen active" id="screen-1">
+    <div class="eyebrow">✦ <span id="cd-eyebrow">COUNTDOWN TO THE SURPRISE</span> ✦</div>
+    <h1 class="title" id="event-title">Happy Birthday Mazoon</h1>
+    <p class="subheading" id="event-sub">A little surprise is waiting for the most amazing boy. 🩵</p>
+
+    <div class="countdown-grid">
+      <div class="cd-box"><div class="cd-num" id="cd-days">00</div><div class="cd-label">Days</div></div>
+      <div class="cd-box"><div class="cd-num" id="cd-hours">00</div><div class="cd-label">Hours</div></div>
+      <div class="cd-box"><div class="cd-num" id="cd-mins">00</div><div class="cd-label">Minutes</div></div>
+      <div class="cd-box"><div class="cd-num" id="cd-secs">00</div><div class="cd-label">Seconds</div></div>
+    </div>
+
+    <button class="btn btn-locked" id="btn-countdown" disabled>
+      <span id="cd-btn-icon">🔒</span> <span id="cd-btn-text">Wait until the time comes</span>
+    </button>
+    <div class="hint-line">⏳ <span>Your surprise is almost ready...</span></div>
+  </section>
+
+  <!-- ============ SCREEN 2 : PIN LOCK ============ -->
+  <section class="screen" id="screen-2">
+    <div class="eyebrow">✦ A SURPRISE MADE WITH LOVE ✦</div>
+    <h1 class="title">Unlock Your <em>Special Gift</em></h1>
+    <p class="subheading">Only my favorite boy can open this. 🤫</p>
+
+    <div class="pin-dots" id="pin-dots">
+      <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+    </div>
+
+    <div class="pin-pad" id="pin-pad">
+      <button class="pin-key" data-key="1">1</button>
+      <button class="pin-key" data-key="2">2</button>
+      <button class="pin-key" data-key="3">3</button>
+      <button class="pin-key" data-key="4">4</button>
+      <button class="pin-key" data-key="5">5</button>
+      <button class="pin-key" data-key="6">6</button>
+      <button class="pin-key" data-key="7">7</button>
+      <button class="pin-key" data-key="8">8</button>
+      <button class="pin-key" data-key="9">9</button>
+      <button class="pin-key fn" data-key="del">⌫</button>
+      <button class="pin-key" data-key="0">0</button>
+      <button class="pin-key fn" data-key="ok">✓</button>
+    </div>
+
+    <div class="hint-line">💕 <span id="pin-hint">Hint: our special date</span></div>
+  </section>
+
+  <!-- ============ SCREEN 3 : CATCH ME ============ -->
+  <section class="screen" id="screen-3">
+    <div class="mascot">🐳💕</div>
+    <h1 class="title">Before Your <em>Surprise...</em></h1>
+
+    <div class="glass question-card">
+      <p class="question-text">Will you always be my boy? 💕</p>
+      <div class="yn-row" id="yn-row">
+        <button class="btn" id="btn-yes">YES</button>
+        <button class="btn btn-ghost" id="btn-no">NO</button>
+      </div>
+      <p class="yes-feedback" id="yes-feedback">That's my boy! Now enjoy your surprise. 🩵</p>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 4 : LOVE METER ============ -->
+  <section class="screen" id="screen-4">
+    <div class="eyebrow">✦ LOVE METER ✦</div>
+    <h1 class="title">Let's Measure <em>Your Love</em></h1>
+
+    <div class="heart-wrap">
+      <svg viewBox="0 0 100 100">
+        <defs>
+          <linearGradient id="heartGrad" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0%" stop-color="var(--accent-blue-2)"/>
+            <stop offset="100%" stop-color="var(--accent-pink)"/>
+          </linearGradient>
+          <clipPath id="heartClip">
+            <path d="M50 88 C20 65 4 45 4 27 C4 12 15 3 28 3 C38 3 46 9 50 18 C54 9 62 3 72 3 C85 3 96 12 96 27 C96 45 80 65 50 88 Z"/>
+          </clipPath>
+        </defs>
+        <path d="M50 88 C20 65 4 45 4 27 C4 12 15 3 28 3 C38 3 46 9 50 18 C54 9 62 3 72 3 C85 3 96 12 96 27 C96 45 80 65 50 88 Z"
+              fill="none" stroke="var(--accent-blue)" stroke-width="2.5" opacity="0.5"/>
+        <g clip-path="url(#heartClip)">
+          <rect id="heart-fill" x="0" y="100" width="100" height="0" fill="url(#heartGrad)"/>
+        </g>
+      </svg>
+    </div>
+    <div class="love-percent"><span id="love-pct">0</span>%</div>
+    <p class="love-caption" id="love-caption">Hold the button to fill my heart 🩵</p>
+
+    <button class="btn hold-btn" id="btn-hold">
+      <div class="fillbar" id="hold-fillbar"></div>
+      <span>🩵 HOLD TO SEND LOVE</span>
+    </button>
+
+    <p class="result-text" id="love-result">You're officially the best boyfriend ever!</p>
+    <button class="btn btn-pink hidden" id="btn-begin" style="margin-top:16px;">✦ LET'S BEGIN ✦</button>
+  </section>
+
+  <!-- ============ SCREEN 5 : MENU ============ -->
+  <section class="screen" id="screen-5">
+    <div class="eyebrow">✦ CHOOSE THE SURPRISE ✦</div>
+    <h1 class="title">Choose Your <em>Little Surprise</em></h1>
+    <p class="subheading">A little website made just to celebrate you. 🩵</p>
+
+    <div class="menu-grid">
+      <div class="glass menu-card" data-target="video">
+        <div class="menu-icon">🎬</div>
+        <div class="menu-label">Video</div>
+        <div class="menu-desc">A little video for my favorite boy</div>
+      </div>
+      <div class="glass menu-card" data-target="photo">
+        <div class="menu-icon">📷</div>
+        <div class="menu-label">Photo</div>
+        <div class="menu-desc">Every beautiful memory with you</div>
+      </div>
+      <div class="glass menu-card" data-target="letter">
+        <div class="menu-icon">💌</div>
+        <div class="menu-label">Letter</div>
+        <div class="menu-desc">A letter from my heart</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 6a : VIDEO ============ -->
+  <section class="screen content-screen" id="screen-video">
+    <button class="back-btn" data-back>← Menu</button>
+    <h1 class="title" style="font-size:24px;">A Video For You</h1>
+    <p class="subheading">Happy Birthday Mazoon 🩵</p>
+    
+    <!-- التعديل هنا: وضع أيقونة تشغيل وحذف الـ controls مبدئياً -->
+    <div class="video-frame" id="video-container">
+      <video id="my-video" poster="pho.jpeg">
+        <source src="koky.mp4" type="video/mp4">
+      </video>
+      <div class="play-overlay" id="play-overlay">
+        <!-- شكل زر تشغيل (Play Icon) -->
+        <svg viewBox="0 0 24 24" fill="currentColor" width="60" height="60">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 6b : PHOTO ============ -->
+  <section class="screen content-screen" id="screen-photo">
+    <button class="back-btn" data-back>← Menu</button>
+    <h1 class="title" style="font-size:24px;">Our Favorite Memories</h1>
+    <p class="subheading">every smile, every laugh, every memory</p>    
+    
+    <div class="gallery">
+      <div class="photo-card">
+        <img src="photo1.jpg" alt="memory 1">
+        <p class="photo-caption">1- The first time we met ❤️</p>
+      </div>
+      <div class="photo-card">
+        <img src="photo2.jpg" alt="memory 2">
+        <p class="photo-caption">2- Definitely not the last time ❤️</p>
+      </div>
+      <div class="photo-card">
+        <img src="photo3.jpg" alt="memory 3">
+        <p class="photo-caption">3- Handsome as always</p>
+      </div>
+      <div class="photo-card">
+        <img src="photo4.jpg" alt="memory 4">
+        <p class="photo-caption">4- That charming smile 🥵</p>
+      </div>
+      <div class="photo-card">
+        <img src="photo5.jpg" alt="memory 5">
+        <p class="photo-caption">5- Trouble in the best way 😱</p>
+      </div>
+      <div class="photo-card">
+        <img src="photo6.jpg" alt="memory 6">
+        <p class="photo-caption">6- Making memories with you</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 6c : LETTER ============ -->
+  <section class="screen content-screen" id="screen-letter">
+    <button class="back-btn" data-back>← Menu</button>
+    <h1 class="title" style="font-size:24px;">A Letter For My Favorite Boy</h1>
+    
+    <div class="glass letter-card">
+      <p>إلى حبيبي مازن ❤️
+
+مش عارفة إذا كنت بعرف أقولك الكلام ده وإنت قدامي ولا لأ، بس يمكن الكتابة أسهل شوية.. عشان أقدر أقول كل حاجة من غير ما أتكسف، ومن غير ما ألخبط الكلام وأنا بتكلم معاك.
+
+النهارده يوم ميلادك، بس أنا حاسة إن المناسبة دي بالنسبالي أكبر من مجرد إني أقولك "كل سنة وإنت طيب".
+
+لأني لما بفكر فيك، مش بفكر بس في الشخص اللي بحبه.. بفكر في كل التفاصيل الصغيرة اللي بقت مرتبطة بيك في حياتي. في الكلام اللي بينا، والضحك، والزعل، والمواقف اللي محدش غيرنا ممكن يفهم معناها، وحتى الحاجات العادية جدًا اللي يمكن وقتها مكنتش واخدة بالي منها، بس لما أفتكرها دلوقتي ألاقيها من أكتر الحاجات اللي بحبها.
+
+أتمنى سنتك الجديدة تكون أحن عليك من كل اللي فات، وتاخد منها كل اللي نفسك فيه، وتسيب فيها كل حاجة وجعتك.
+
+وأتمنى أكون جزء من كل الحاجات الحلوة اللي جاية في حياتك. ❤️
+
+Happy Birthday to my favorite person</p>
+    </div>
+    <button class="btn btn-ghost" id="btn-onemore" style="margin-top:20px;">ONE MORE THING ✦</button>
+  </section>
+
+  <!-- ============ SCREEN 7 : FINALE ============ -->
+  <section class="screen" id="screen-7">
+    <div class="typewriter-box">
+      <p id="typewriter-text"><span class="cursor-blink">|</span></p>
+    </div>
+    <button class="btn btn-ghost hidden" id="btn-again" style="margin-top:24px;">🔁 Experience It Again</button>
+  </section>
+
+</div>
+
+<div class="emoji-rain-layer" id="emoji-rain"></div>
+
+<script>
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const CONFIG = {
+  targetDate: "2026-08-26T16:30:00Z",   
+  pin: "5555",                          
+  eventName: "Happy Birthday Mazoon",
+  finaleLines: [
+    "Thank you for always being my happiness...",
+    "You mean everything to me...",
+    "Happy Birthday Mazoon, my love. 💙"
+  ]
+};
+
+/* ============================================================
+   NAVIGATION HELPERS
+   ============================================================ */
+const screens = document.querySelectorAll('.screen');
+function goTo(id){
+  screens.forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+/* ============================================================
+   BACKGROUND MUSIC
+   ============================================================ */
+const music = document.getElementById('bg-music');
+let musicStarted = false;
+function unlockMusic(){
+  if(musicStarted) return;
+  musicStarted = true;
+  music.volume = 0.5;
+  music.play().catch(()=>{});
+}
+// اول ضغطة في السايت هتشغل الاغنية
+document.addEventListener('click', unlockMusic, { once:true });
+document.addEventListener('touchstart', unlockMusic, { once:true });
+
+/* ============================================================
+   VIDEO LOGIC & FULLSCREEN
+   ============================================================ */
+const myVideo = document.getElementById('my-video');
+const playOverlay = document.getElementById('play-overlay');
+const videoContainer = document.getElementById('video-container');
+
+// تشغيل الفيديو والدخول في وضع ملء الشاشة عند الضغط
+videoContainer.addEventListener('click', () => {
+  if (myVideo.paused) {
+    myVideo.play();
+    myVideo.setAttribute('controls', 'true'); // إظهار التحكم عند التشغيل
+    
+    // الدخول لملء الشاشة بجميع المتصفحات الممكنة
+    if (myVideo.requestFullscreen) {
+      myVideo.requestFullscreen();
+    } else if (myVideo.webkitEnterFullscreen) { /* لمتصفح سفاري وايفون */
+      myVideo.webkitEnterFullscreen();
+    } else if (myVideo.msRequestFullscreen) { /* للاكسبلورر القديم */
+      myVideo.msRequestFullscreen();
+    }
+  }
+});
+
+myVideo.addEventListener('play', () => {
+  if(musicStarted) music.pause();
+  playOverlay.style.opacity = '0'; // إخفاء زر التشغيل
+});
+
+myVideo.addEventListener('pause', () => {
+  if(musicStarted) music.play();
+  playOverlay.style.opacity = '1'; // إظهار زر التشغيل
+});
+
+// الخروج من ملء الشاشة ورجوع الفيديو لمكانه لما يخلص
+myVideo.addEventListener('ended', () => {
+  playOverlay.style.opacity = '1';
+  myVideo.removeAttribute('controls');
+  
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+  } else if (document.webkitFullscreenElement) {
+    document.webkitExitFullscreen();
+  }
+});
+
+// إيقاف الفيديو وحذف التحكم لو المستخدم قفل ملء الشاشة بإيده
+document.addEventListener('fullscreenchange', () => {
+  if (!document.fullscreenElement) {
+    myVideo.pause();
+    myVideo.removeAttribute('controls');
+  }
+});
+document.addEventListener('webkitfullscreenchange', () => {
+  if (!document.webkitFullscreenElement) {
+    myVideo.pause();
+    myVideo.removeAttribute('controls');
+  }
+});
+
+
+/* ============================================================
+   AMBIENT PARTICLES
+   ============================================================ */
+(function particles(){
+  const canvas = document.getElementById('particles-canvas');
+  const ctx = canvas.getContext('2d');
+  let w, h, particlesArr = [];
+
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  const COUNT = 60;
+  for(let i=0;i<COUNT;i++){
+    particlesArr.push({
+      x: Math.random()*w,
+      y: Math.random()*h,
+      r: Math.random()*1.6 + 0.4,
+      speed: Math.random()*0.35 + 0.08,
+      drift: (Math.random()-0.5)*0.3,
+      alpha: Math.random()*0.6 + 0.2
+    });
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    particlesArr.forEach(p=>{
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(220,235,255,${p.alpha})`;
+      ctx.fill();
+      p.y += p.speed;
+      p.x += p.drift;
+      if(p.y > h){ p.y = -4; p.x = Math.random()*w; }
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ============================================================
+   SCREEN 1 — COUNTDOWN
+   ============================================================ */
+document.getElementById('event-title').textContent = CONFIG.eventName;
+
+const target = new Date(CONFIG.targetDate).getTime();
+const cdDays = document.getElementById('cd-days');
+const cdHours = document.getElementById('cd-hours');
+const cdMins = document.getElementById('cd-mins');
+const cdSecs = document.getElementById('cd-secs');
+const btnCountdown = document.getElementById('btn-countdown');
+const cdBtnIcon = document.getElementById('cd-btn-icon');
+const cdBtnText = document.getElementById('cd-btn-text');
+
+function pad(n){ return String(n).padStart(2,'0'); }
+
+function tickCountdown(){
+  const now = Date.now();
+  const diff = target - now;
+
+  if(diff <= 0){
+    cdDays.textContent = '00'; cdHours.textContent='00'; cdMins.textContent='00'; cdSecs.textContent='00';
+    if(btnCountdown.disabled){
+      btnCountdown.disabled = false;
+      btnCountdown.classList.remove('btn-locked');
+      btnCountdown.classList.add('btn-glow');
+      cdBtnIcon.textContent = '✨';
+      cdBtnText.textContent = 'Open Your Surprise';
+    }
+    return;
+  }
+
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+
+  cdDays.textContent = pad(d);
+  cdHours.textContent = pad(h);
+  cdMins.textContent = pad(m);
+  cdSecs.textContent = pad(s);
+}
+tickCountdown();
+setInterval(tickCountdown, 1000);
+
+btnCountdown.addEventListener('click', ()=>{
+  if(btnCountdown.disabled) return;
+  goTo('screen-2');
+});
+
+/* ============================================================
+   SCREEN 2 — PIN LOCK
+   ============================================================ */
+let pinEntered = "";
+const pinDotsWrap = document.getElementById('pin-dots');
+const pinDots = pinDotsWrap.querySelectorAll('.pin-dot');
+
+function refreshDots(){
+  pinDots.forEach((dot,i)=> dot.classList.toggle('filled', i < pinEntered.length));
+}
+
+function checkPin(){
+  if(pinEntered === CONFIG.pin){
+    setTimeout(()=> goTo('screen-3'), 350);
+  } else {
+    pinDotsWrap.classList.add('error','shake');
+    setTimeout(()=>{
+      pinDotsWrap.classList.remove('error','shake');
+      pinEntered = "";
+      refreshDots();
+    }, 550);
+  }
+}
+
+document.getElementById('pin-pad').addEventListener('click', (e)=>{
+  const key = e.target.closest('.pin-key');
+  if(!key) return;
+  const val = key.dataset.key;
+
+  if(val === 'del'){
+    pinEntered = pinEntered.slice(0,-1);
+    refreshDots();
+    return;
+  }
+  if(val === 'ok'){
+    if(pinEntered.length === 4) checkPin();
+    return;
+  }
+  if(pinEntered.length < 4){
+    pinEntered += val;
+    refreshDots();
+    if(pinEntered.length === 4) setTimeout(checkPin, 150);
+  }
+});
+
+/* ============================================================
+   SCREEN 3 — CATCH ME
+   ============================================================ */
+const btnNo = document.getElementById('btn-no');
+const btnYes = document.getElementById('btn-yes');
+const ynRow = document.getElementById('yn-row');
+const yesFeedback = document.getElementById('yes-feedback');
+const emojiRainLayer = document.getElementById('emoji-rain');
+let noDodgeCount = 0;
+const NO_MAX_TRIES = 5; 
+
+function dodgeNo(){
+  if(noDodgeCount >= NO_MAX_TRIES) return; 
+  noDodgeCount++;
+
+  const rowRect = ynRow.getBoundingClientRect();
+  const btnRect = btnNo.getBoundingClientRect();
+  const maxX = rowRect.width - btnRect.width - 4;
+  const newX = Math.random() * maxX;
+  const newY = (Math.random() - 0.5) * 8;
+
+  btnNo.classList.add('roaming');
+  btnNo.style.left = newX + 'px';
+  btnNo.style.top = newY + 'px';
+
+  const yesScale = 1 + noDodgeCount * 0.55;
+  btnYes.style.transform = `scale(${yesScale})`;
+  btnYes.style.zIndex = 20;
+
+  const noOpacity = Math.max(1 - noDodgeCount * 0.2, 0);
+  btnNo.style.opacity = noOpacity;
+
+  if(noDodgeCount >= NO_MAX_TRIES){
+    btnNo.style.display = 'none';
+    btnYes.classList.add('btn-yes-fullscreen');
+  }
+
+  yesFeedback.classList.remove('show');
+}
+
+btnNo.addEventListener('mouseenter', dodgeNo);
+btnNo.addEventListener('touchstart', (e)=>{ e.preventDefault(); dodgeNo(); }, {passive:false});
+btnNo.addEventListener('click', (e)=>{ e.preventDefault(); dodgeNo(); });
+
+function emojiRain(){
+  const emojis = ['😍','🩵','✨','💙','💫'];
+  for(let i=0;i<28;i++){
+    const span = document.createElement('span');
+    span.className = 'emoji-fall';
+    span.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    span.style.left = Math.random()*100 + 'vw';
+    span.style.animationDuration = (2.2 + Math.random()*1.6) + 's';
+    span.style.fontSize = (16 + Math.random()*14) + 'px';
+    emojiRainLayer.appendChild(span);
+    setTimeout(()=> span.remove(), 4000);
+  }
+}
+
+btnYes.addEventListener('click', ()=>{
+  emojiRain();
+  yesFeedback.classList.add('show');
+  document.getElementById('yn-row').style.opacity = '0.3';
+  btnYes.disabled = true;
+  btnNo.style.display = 'none';
+  setTimeout(()=> goTo('screen-4'), 2000);
+});
+
+/* ============================================================
+   SCREEN 4 — LOVE METER
+   ============================================================ */
+const heartFill = document.getElementById('heart-fill');
+const lovePct = document.getElementById('love-pct');
+const loveCaption = document.getElementById('love-caption');
+const holdFillbar = document.getElementById('hold-fillbar');
+const btnHold = document.getElementById('btn-hold');
+const loveResult = document.getElementById('love-result');
+const btnBegin = document.getElementById('btn-begin');
+
+let loveVal = 0;
+let holdInterval = null;
+let loveDone = false;
+
+function startHold(){
+  if(loveDone) return;
+  clearInterval(holdInterval);
+  holdInterval = setInterval(()=>{
+    loveVal = Math.min(100, loveVal + 2);
+    lovePct.textContent = loveVal;
+    heartFill.setAttribute('y', 100 - loveVal);
+    heartFill.setAttribute('height', loveVal);
+    holdFillbar.style.width = loveVal + '%';
+
+    if(loveVal >= 100){
+      clearInterval(holdInterval);
+      loveDone = true;
+      loveCaption.textContent = "Maximum love reached 🩵";
+      loveResult.classList.add('show');
+      btnHold.classList.add('hidden');
+      btnBegin.classList.remove('hidden');
+    }
+  }, 35);
+}
+function stopHold(){ clearInterval(holdInterval); }
+
+btnHold.addEventListener('mousedown', startHold);
+btnHold.addEventListener('touchstart', (e)=>{ e.preventDefault(); startHold(); }, {passive:false});
+['mouseup','mouseleave'].forEach(ev => btnHold.addEventListener(ev, stopHold));
+['touchend','touchcancel'].forEach(ev => btnHold.addEventListener(ev, stopHold));
+
+btnBegin.addEventListener('click', ()=> goTo('screen-5'));
+
+/* ============================================================
+   SCREEN 5 — MENU  &  SCREEN 6 — CONTENT MODALS
+   ============================================================ */
+document.querySelectorAll('.menu-card').forEach(card=>{
+  card.addEventListener('click', ()=>{
+    goTo('screen-' + card.dataset.target);
+  });
+});
+
+document.querySelectorAll('[data-back]').forEach(btn=>{
+  btn.addEventListener('click', ()=> {
+    myVideo.pause(); // هيقفل الفيديو لو شغال اول ما ترجع
+    if (document.fullscreenElement) document.exitFullscreen();
+    goTo('screen-5');
+  });
+});
+
+document.getElementById('btn-onemore').addEventListener('click', ()=>{
+  goTo('screen-7');
+  startFinale();
+});
+
+/* ============================================================
+   SCREEN 7 — FINALE (typewriter)
+   ============================================================ */
+const typewriterEl = document.getElementById('typewriter-text');
+const btnAgain = document.getElementById('btn-again');
+let finaleRunning = false;
+
+function typeLine(text, cb){
+  typewriterEl.innerHTML = '';
+  let i = 0;
+  const speed = 45;
+  function step(){
+    if(i <= text.length){
+      typewriterEl.innerHTML = text.slice(0,i) + '<span class="cursor-blink">|</span>';
+      i++;
+      setTimeout(step, speed);
+    } else {
+      setTimeout(cb, 1100);
+    }
+  }
+  step();
+}
+
+function startFinale(){
+  if(finaleRunning) return;
+  finaleRunning = true;
+  btnAgain.classList.add('hidden');
+  let idx = 0;
+  function next(){
+    if(idx < CONFIG.finaleLines.length){
+      typeLine(CONFIG.finaleLines[idx], ()=>{
+        idx++;
+        next();
+      });
+    } else {
+      btnAgain.classList.remove('hidden');
+      finaleRunning = false;
+    }
+  }
+  next();
+}
+
+btnAgain.addEventListener('click', ()=>{
+  goTo('screen-5');
+});
+</script>
+</body>
+</html>
